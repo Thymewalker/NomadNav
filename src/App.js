@@ -2,9 +2,14 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import HomeScreen from './screens/Home/HomeScreen';
-import ReportPriceScreen from './screens/Home/ReportPriceScreen';
-import SimplePlaceholderScreen from './screens/Common/PlaceholderScreen';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+// Import screens
+import ExploreScreen from './screens/Explore/ExploreScreen';
+import MapsScreen from './screens/Maps/MapsScreen';
+import PricesToolsScreen from './screens/PricesTools/PricesToolsScreen';
+import SafetyCommsScreen from './screens/SafetyComms/SafetyCommsScreen';
+import ReportPriceScreen from './screens/Report/ReportPriceScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,13 +25,50 @@ const App = () => {
               backgroundColor: '#2563eb',
             },
             headerTintColor: '#fff',
+            tabBarStyle: {
+              paddingBottom: 5,
+              paddingTop: 5,
+            },
           }}
         >
           <Tab.Screen 
-            name="Home" 
-            component={HomeScreen}
+            name="Explore" 
+            component={ExploreScreen}
             options={{
-              title: 'NomadNav',
+              title: 'Explore',
+              tabBarIcon: ({ color, size }) => (
+                <Icon name="compass" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Maps" 
+            component={MapsScreen}
+            options={{
+              title: 'Maps',
+              tabBarIcon: ({ color, size }) => (
+                <Icon name="map-marker" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="PricesTools" 
+            component={PricesToolsScreen}
+            options={{
+              title: 'Prices & Tools',
+              tabBarIcon: ({ color, size }) => (
+                <Icon name="currency-usd" size={size} color={color} />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="SafetyComms" 
+            component={SafetyCommsScreen}
+            options={{
+              title: 'Safety & Comms',
+              tabBarIcon: ({ color, size }) => (
+                <Icon name="shield-check" size={size} color={color} />
+              ),
             }}
           />
           <Tab.Screen 
@@ -34,27 +76,9 @@ const App = () => {
             component={ReportPriceScreen}
             options={{
               title: 'Report Price',
-            }}
-          />
-          <Tab.Screen 
-            name="Guides" 
-            component={SimplePlaceholderScreen}
-            options={{
-              title: 'Travel Guides',
-            }}
-          />
-          <Tab.Screen 
-            name="Prices" 
-            component={SimplePlaceholderScreen}
-            options={{
-              title: 'Price Database',
-            }}
-          />
-          <Tab.Screen 
-            name="Trusted" 
-            component={SimplePlaceholderScreen}
-            options={{
-              title: 'Trusted Contacts',
+              tabBarIcon: ({ color, size }) => (
+                <Icon name="plus-circle" size={size} color={color} />
+              ),
             }}
           />
         </Tab.Navigator>
