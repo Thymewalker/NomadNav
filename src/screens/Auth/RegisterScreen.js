@@ -10,24 +10,31 @@ import {
 } from 'react-native';
 import { useAuth } from '../../contexts/AuthContext';
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, error } = useAuth();
+  const { register, error } = useAuth();
 
-  const handleLogin = async () => {
-    if (!email || !password) {
+  const handleRegister = async () => {
+    if (!username || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
 
     try {
       setLoading(true);
-      await login(email, password);
+      await register(username, email, password);
       // Navigation will be handled by the auth state change
     } catch (error) {
-      Alert.alert('Error', error.response?.data?.message || 'Login failed');
+      Alert.alert('Error', error.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -35,10 +42,18 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to NomadNav</Text>
-      <Text style={styles.subtitle}>Login to continue</Text>
+      <Text style={styles.title}>Create Account</Text>
+      <Text style={styles.subtitle}>Join NomadNav today</Text>
 
       <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
+
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -56,26 +71,34 @@ const LoginScreen = ({ navigation }) => {
           secureTextEntry
         />
 
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+
         {error && <Text style={styles.error}>{error}</Text>}
 
         <TouchableOpacity
           style={styles.button}
-          onPress={handleLogin}
+          onPress={handleRegister}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="#fff" />
           ) : (
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Register</Text>
           )}
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.linkButton}
-          onPress={() => navigation.navigate('Register')}
+          onPress={() => navigation.navigate('Login')}
         >
           <Text style={styles.linkText}>
-            Don't have an account? Register here
+            Already have an account? Login here
           </Text>
         </TouchableOpacity>
       </View>
@@ -139,4 +162,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen; 
