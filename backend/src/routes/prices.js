@@ -114,22 +114,26 @@ router.patch('/:id', auth, async (req, res) => {
 // Delete a price report
 router.delete('/:id', auth, async (req, res) => {
   try {
+    console.log('Attempting to delete price with ID:', req.params.id);
     const price = await Price.findById(req.params.id);
     
     if (!price) {
+      console.log('Price not found for delete:', req.params.id);
       return res.status(404).json({ message: 'Price not found' });
     }
 
     // Check if user is the reporter or an admin
     if (price.reportedBy.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
-      return res.status(403).json({ message: 'Not authorized to delete this price report' });
+      console.log('Unauthorized delete attempt. User:', req.user._id, 'Price reporter:', price.reportedBy);
+      return res.status(403).json({ message: 'Not authorized to delete this price' });
     }
 
-    await price.remove();
-
-    res.json({ message: 'Price report deleted successfully' });
+    console.log('Deleting price:', req.params.id);
+    await Price.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Price deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting price report', error: error.message });
+    console.error('Error deleting price:', error);
+    res.status(500).json({ message: error.message });
   }
 });
 

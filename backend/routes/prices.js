@@ -91,9 +91,10 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to delete this price' });
     }
 
-    await price.remove();
+    await Price.findByIdAndDelete(req.params.id);
     res.json({ message: 'Price deleted successfully' });
   } catch (error) {
+    console.error('Error deleting price:', error);
     res.status(500).json({ message: error.message });
   }
 });

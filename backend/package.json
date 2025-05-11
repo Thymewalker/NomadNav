@@ -1,12 +1,13 @@
 {
   "name": "nomadnav-backend",
   "version": "1.0.0",
-  "description": "Backend server for NomadNav application",
+  "description": "Backend for NomadNav application",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
+    "test:watch": "jest --watch",
     "seed": "node src/scripts/seedData.js"
   },
   "dependencies": {
@@ -19,6 +20,11 @@
   },
   "devDependencies": {
     "jest": "^29.5.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "setupFilesAfterEnv": ["./src/tests/setup.js"]
   }
 } 

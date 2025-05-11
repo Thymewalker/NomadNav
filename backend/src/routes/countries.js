@@ -6,27 +6,28 @@ const { auth, isAdmin } = require('../middleware/auth');
 // Get all countries
 router.get('/', async (req, res) => {
   try {
-    const countries = await Country.find()
-      .select('name code currency language emergencyNumbers visaRequirements');
-    
+    const countries = await Country.find();
+    console.log('All countries in DB:', countries.map(c => c.name));
     res.json(countries);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching countries', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
 // Get a single country by code
 router.get('/:code', async (req, res) => {
   try {
+    console.log('Searching for country with code:', req.params.code);
     const country = await Country.findOne({ code: req.params.code.toUpperCase() });
     
     if (!country) {
+      console.log('Country not found with code:', req.params.code);
       return res.status(404).json({ message: 'Country not found' });
     }
 
-    res.json(country);
+    res.json({ country });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching country', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -64,16 +65,18 @@ router.post('/', auth, isAdmin, async (req, res) => {
       country: newCountry,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error creating country', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
 // Update a country (admin only)
 router.patch('/:code', auth, isAdmin, async (req, res) => {
   try {
+    console.log('Updating country with code:', req.params.code);
     const country = await Country.findOne({ code: req.params.code.toUpperCase() });
     
     if (!country) {
+      console.log('Country not found for update:', req.params.code);
       return res.status(404).json({ message: 'Country not found' });
     }
 
@@ -103,24 +106,26 @@ router.patch('/:code', auth, isAdmin, async (req, res) => {
       country,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating country', error: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
 // Delete a country (admin only)
 router.delete('/:code', auth, isAdmin, async (req, res) => {
   try {
+    console.log('Deleting country with code:', req.params.code);
     const country = await Country.findOne({ code: req.params.code.toUpperCase() });
     
     if (!country) {
+      console.log('Country not found for delete:', req.params.code);
       return res.status(404).json({ message: 'Country not found' });
     }
 
-    await country.remove();
-
+    await Country.findByIdAndDelete(country._id);
     res.json({ message: 'Country deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error deleting country', error: error.message });
+    console.error('Error deleting country:', error);
+    res.status(500).json({ message: error.message });
   }
 });
 
